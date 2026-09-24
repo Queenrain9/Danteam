@@ -34,7 +34,7 @@ VIEWPORTS = ((320, 640), (360, 800))
 
 
 def git_blob_sha(data):
-    payload = b"blob " + str(len(data)).encode("ascii") + b"\\0" + data
+    payload = b"blob " + str(len(data)).encode("ascii") + b"\0" + data
     return hashlib.sha1(payload).hexdigest()
 
 
@@ -80,8 +80,9 @@ def snapshot(page):
 
 
 def capture(page, folder, case, stage):
+    measured = snapshot(page)
     page.screenshot(path=str(folder / f"{case}-{stage}.png"), full_page=True)
-    return snapshot(page)
+    return measured
 
 
 def wait_state(page, phase, step=None):
@@ -124,7 +125,7 @@ def perform(page, case, reaction, clues, folder):
     # human understood the silent story or could comfortably tap real hardware.
     if reaction == "R3":
         mandatory["hand_touches_existing_plate"] = action["armPlateOverlap"] > 0
-        mandatory["plate_mark_in_result"] = result["doorholeOpacity"] != "0"
+        mandatory["plate_mark_in_result"] = float(result["doorholeOpacity"]) > .8
     if reaction == "H":
         mandatory["paper_guest_unoccluded_bbox"] = result["guestVisitorOverlap"] == 0
     if reaction == "R0":
@@ -135,7 +136,6 @@ def perform(page, case, reaction, clues, folder):
         "observations": {
             "cue":cue,"gaze":gaze,"action":action,"result":result,
             # SUN-STATIC-01/02/03: record before proposing visual changes.
-            "r1_action_hand_near_mirror":None,
             "r2_ripple_during_action": action["residueActive"] if reaction=="R2" else None,
             "r0_gaze_measured_shift": gaze["visitor"]["x"]-cue["visitor"]["x"]
                 if reaction=="R0" else None,
