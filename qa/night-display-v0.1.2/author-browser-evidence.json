@@ -1,0 +1,230 @@
+{
+  "kind": "KAI author-owned actual-browser capture summary; not an independent ECHO/LUX/SUN result",
+  "gameVersion": "v0.1.2",
+  "gameCommit": "f622320296a6484b8c68a6fb05d38ff3ebee4171",
+  "exactPlayGitBlob": "4f33168575e0adedf8b34ee3a7ed65fe31595fb2",
+  "runtime": "Python Playwright + /usr/bin/chromium, mobile touch emulation; set_content(inline exact version-pinned play.html)",
+  "reasonInline": "Chromium native file:// and localhost requests blocked by ERR_BLOCKED_BY_ADMINISTRATOR in KAI container; therefore this does not establish native file URL or hosted game operation.",
+  "command": "python reproduce-v012.py (KAI local five-case runner); team-reproducible QA script: qa/night-display-v0.1.2/browser-repro.py --html night-display/play.html --out OUTPUT --inline [--chromium /usr/bin/chromium]",
+  "cases": [
+    {
+      "viewport": "320x640",
+      "slots": "MCK",
+      "reaction": "R1",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 4,
+      "mandatoryTotal": 4,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "360x800",
+      "slots": "MCK",
+      "reaction": "R1",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 4,
+      "mandatoryTotal": 4,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "320x640",
+      "slots": "CBK",
+      "reaction": "R2",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 4,
+      "mandatoryTotal": 4,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "360x800",
+      "slots": "CBK",
+      "reaction": "R2",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 4,
+      "mandatoryTotal": 4,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "320x640",
+      "slots": "MBK",
+      "reaction": "R3",
+      "screenClueSlots": [
+        2
+      ],
+      "mandatoryPassed": 6,
+      "mandatoryTotal": 6,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 286,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "360x800",
+      "slots": "MBK",
+      "reaction": "R3",
+      "screenClueSlots": [
+        2
+      ],
+      "mandatoryPassed": 6,
+      "mandatoryTotal": 6,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 286,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "320x640",
+      "slots": "MCB",
+      "reaction": "H",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 5,
+      "mandatoryTotal": 5,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": 0,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "360x800",
+      "slots": "MCB",
+      "reaction": "H",
+      "screenClueSlots": [
+        1
+      ],
+      "mandatoryPassed": 5,
+      "mandatoryTotal": 5,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": 0,
+      "r0ResultVisitorOpacity": null
+    },
+    {
+      "viewport": "320x640",
+      "slots": "MKC",
+      "reaction": "R0",
+      "screenClueSlots": [],
+      "mandatoryPassed": 5,
+      "mandatoryTotal": 5,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": 0
+    },
+    {
+      "viewport": "360x800",
+      "slots": "MKC",
+      "reaction": "R0",
+      "screenClueSlots": [],
+      "mandatoryPassed": 5,
+      "mandatoryTotal": 5,
+      "jsErrors": 0,
+      "horizontalOverflow": false,
+      "actionHandPlateIntersectionPx": 0,
+      "hResultGuestVisitorBBoxOverlapPx": null,
+      "r0ResultVisitorOpacity": 0
+    }
+  ],
+  "ownEmulatorCasesPassed": 10,
+  "ownEmulatorCasesFailed": 0,
+  "ownScreenshotsCreatedLocally": 40,
+  "ownScreenshotsSharedOnGitHub": false,
+  "actualOriginalJsonInKAIContainer": "night-display-v012-evidence/five-case-report.json (not a publicly shared GitHub file)",
+  "headPixelDiffCueVsGaze": {
+    "320x640": {
+      "MCB": 4367,
+      "MKC": 2704
+    },
+    "360x800": {
+      "MCB": 2632,
+      "MKC": 1493
+    }
+  },
+  "headRegionCrop": "x=center-48 through center+48, y=80:165 (96x85 pixels). Count nonzero grayscale difference pixels. Different labels and other scene pixels outside crop excluded.",
+  "observations": {
+    "H": "320/360 source CUE vs GAZE head image changed; previous v0.1.1 had no visible back-wall head-turn frames. Does not establish human interpretation.",
+    "R0": "320/360 source CUE vs GAZE head image changed due even-scan CSS; screenClueSlots remained []. Does not establish all 3 positions perceived equally.",
+    "R1": "ACTION screenshot at both viewports shows existing arm reaching actual M location, temporary mirror glint, slots unchanged. Visual clarity requires LUX/SUN frame inspection.",
+    "R2": "ACTION screenshots at both viewports show a ripple at actual B beneath arm; script v0.1.1 field residueActive remains false because new ACTION class is action-ripple not active. v0.1.2 QA script records actionRipple separately.",
+    "R3": "Both viewports arm-plate bbox overlap measured 286 px² for MBK; RESULT keyhole visible and slotSnapshot remains MBK.",
+    "visibility": "No horizontal overflow or page JS exceptions observed in the ten own mobile-emulation cases."
+  },
+  "v011Comparison": {
+    "commit": "de06b31462a2e42a44612937806346f429742122",
+    "htmlBlob": "7bd9fc5a3298f5dddb4ef0c8e91298d9e91a55a4",
+    "viewports": [
+      "320x640",
+      "360x800"
+    ],
+    "cases": [
+      "MCK",
+      "CMK",
+      "CBK",
+      "BCK",
+      "MBK",
+      "MKB",
+      "MCB",
+      "BCM",
+      "MKC"
+    ],
+    "observedCases": 18,
+    "jsErrors": 0,
+    "horizontalOverflowCases": 0,
+    "reactionMismatchCases": 0,
+    "slotMutationCases": 0,
+    "visibleClueMismatchCases": 0,
+    "screenFramesCreatedLocally": 72,
+    "mode": "author Chromium inline set_content because file:// gave ERR_BLOCKED_BY_ADMINISTRATOR",
+    "unresolvedExpressionObserved": [
+      "H GAZE head/eyes unchanged; source gazeTarget=1",
+      "R0 GAZE no balanced scan; default gazeTarget=1",
+      "R1 ACTION hand not connected to actual M slot",
+      "R2 ACTION residueActive=false; wave not shown until RESIDUE"
+    ],
+    "representativeHeadPixelDiffCueVsGaze": {
+      "320x640": {
+        "MCB": 565,
+        "MKC": 565
+      },
+      "360x800": {
+        "MCB": 300,
+        "MKC": 300
+      }
+    },
+    "claimBoundary": "Own emulated Chromium only; not an independent UI test, actual phone or human interpretation test."
+  },
+  "limits": [
+    "Author 10-case browser render is not ECHO independent F01–F10, and browser screenshot frames are not yet a shareable remote binary artifact.",
+    "No real phone, real human interpretation, spontaneous retry or overall enjoyment data.",
+    "No Github Pages or hosted playable link; GitHub HTML blob is source only."
+  ]
+}
