@@ -1,0 +1,10 @@
+{
+  "name": "kai-night-display-experiment",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test ./engine.test.mjs",
+    "serve": "python3 -m http.server 8000"
+  }
+}
