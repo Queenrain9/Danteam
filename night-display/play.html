@@ -36,6 +36,47 @@
 .visitor[data-reaction="R3"][data-beat="ACTION"] .visitor-arm::before{content:'';position:absolute;right:12px;top:3px;width:calc(var(--wipe-x,72px) + 8px);height:7px;border-radius:8px;background:linear-gradient(90deg,#777d8a 0%,#e8dab7 48%,#e8dab7 100%);transform-origin:right center;animation:arm-extend .38s ease-in-out forwards}
 @keyframes arm-extend{from{width:6px}to{width:calc(var(--wipe-x,72px) + 8px)}}
 
+/* v0.1.2: distinguish looking at the back wall from looking at the center object. */
+.scene[data-reaction="H"][data-phase="REACT"] .visitor[data-beat="GAZE"] .visitor-head{
+  transform:translateY(-8px) scale(.93);background:#d0c3a5;box-shadow:inset 5px -7px #b9a987;
+  transition:transform .18s ease-out,background .18s ease-out;
+}
+.scene[data-reaction="H"][data-phase="REACT"] .visitor[data-beat="GAZE"] .eye{opacity:0}
+/* R0: every shelf position gets equal, brief attention; no highlighted slot. */
+.scene[data-reaction="R0"][data-phase="REACT"] .visitor[data-beat="GAZE"] .visitor-head{
+  animation:neutral-three-slot-scan .54s linear both;
+}
+@keyframes neutral-three-slot-scan{
+  0%{transform:translateX(-13px) rotate(-5deg)}
+  50%{transform:translateX(0) rotate(0)}
+  100%{transform:translateX(13px) rotate(5deg)}
+}
+/* Move the existing single hand and short arm bridge to the actually occupied M/B slot. */
+.scene[data-phase="REACT"] .visitor[data-reaction="R1"][data-beat="ACTION"],
+.scene[data-phase="REACT"] .visitor[data-reaction="R2"][data-beat="ACTION"]{z-index:5}
+.visitor[data-reaction="R1"][data-beat="ACTION"] .visitor-arm,
+.visitor[data-reaction="R2"][data-beat="ACTION"] .visitor-arm{
+  opacity:1;transform:translate(var(--target-dx,0px),var(--target-dy,0px));transition:transform .33s ease-out;
+}
+.visitor[data-reaction="R1"][data-beat="ACTION"] .visitor-arm::before,
+.visitor[data-reaction="R2"][data-beat="ACTION"] .visitor-arm::before{
+  content:'';position:absolute;left:11px;top:6px;
+  width:var(--reach-length,6px);height:7px;border-radius:7px;
+  transform-origin:left center;transform:rotate(var(--reach-angle,0deg));
+  background:linear-gradient(90deg,#e8dab7 0%,#777d8a 100%);z-index:-1;
+}
+/* Reflection is an action beat near the mirror, not a second CUE highlight. */
+.slot.mirror-glint[data-item="M"] .slot-content::after{
+  content:'✦';position:absolute;top:30px;right:19px;color:#faedb8;font-size:17px;
+  text-shadow:0 0 6px #fff1ad;pointer-events:none;
+}
+/* R2 ripple begins late in ACTION under the already present bell and persists as RESIDUE. */
+.scene[data-reaction="R2"] .residue.action-ripple{
+  background:repeating-radial-gradient(ellipse,#e6d6a7 0 2px,transparent 3px 8px);
+  height:10px;animation:bell-action-ripple .54s linear both;
+}
+@keyframes bell-action-ripple{0%,60%{opacity:0}85%,100%{opacity:1}}
+
 </style>
   <script type="module">
 import { Game, ITEMS } from 'data:text/javascript;base64,Ly8gW0tBSV0gTmlnaHQgRGlzcGxheSBleHBlcmltZW50IEIg4oCUIGRldGVybWluaXN0aWMsIGZyYW1ld29yay1pbmRlcGVuZGVudCBjb3JlLgovLyBMb2dpYyBzb3VyY2U6IFJpbiB2MC4zICsgRGFuIFNZTkMgMDIgZGVjaXNpb24gdXBkYXRlIDAyLjEgKDIwMjYtMDktMjQpLgpleHBvcnQgY29uc3QgUlVMRVNfVkVSU0lPTiA9ICdCLXJ1bGVzLXYwLjMtc3luYzAyLjEnOwpleHBvcnQgY29uc3QgSVRFTVMgPSBPYmplY3QuZnJlZXplKHsgTTogJ+qxsOyauCcsIEM6ICfstJvrtognLCBCOiAn7KKFJywgSzogJ+yXtOyHoCcgfSk7CmV4cG9ydCBjb25zdCBSRVNJRFVBTFMgPSBPYmplY3QuZnJlZXplKHsgSDogJ2hpZGRlblBhcGVyR3Vlc3QnLCBSMTogJ3JlZmxlY3RlZE1hcmsnLCBSMjogJ3ZpYnJhdGlvbk1hcmsnLCBSMzogJ2tleU1hcmsnLCBSMDogJ3VubW92ZWREdXN0JyB9KTsKZXhwb3J0IGNvbnN0IENVRVMgPSBPYmplY3QuZnJlZXplKHsgSDogJ0NBTkRMRV9UT19CQUNLV0FMTCcsIFIxOiAnQ0FORExFX1RPX01JUlJPUicsIFIyOiAnQkVMTF9UT19DQU5ETEUnLCBSMzogJ0tFWV9UT19CRUxMX1RPX1BMQVRFJywgUjA6ICdOT05FX1NDQU4nIH0pOwpleHBvcnQgY29uc3QgQkVBVFMgPSBPYmplY3QuZnJlZXplKFsnQ1VFJywgJ0dBWkUnLCAnQUNUSU9OJywgJ1JFU0lEVUUnXSk7CmNvbnN0IGlzSXRlbSA9IHggPT4gT2JqZWN0Lmhhc093bihJVEVNUywgeCk7CmNvbnN0IHNvcnRlZFNsb3RzID0gKHNsb3RzLCBpdGVtcykgPT4gaXRlbXMubWFwKHggPT4gc2xvdHMuaW5kZXhPZih4KSkuc29ydCgoYSwgYikgPT4gYSAtIGIpOwpjb25zdCBhZGphY2VudCA9IChzbG90cywgYSwgYikgPT4gewogIGNvbnN0IHggPSBzbG90cy5pbmRleE9mKGEpLCB5ID0gc2xvdHMuaW5kZXhPZihiKTsKICByZXR1cm4geCA+PSAwICYmIHkgPj0gMCAmJiBNYXRoLmFicyh4IC0geSkgPT09IDE7Cn07CmNvbnN0IHNhZmVTbG90cyA9IHNsb3RzID0+IHsKICBpZiAoIUFycmF5LmlzQXJyYXkoc2xvdHMpIHx8IHNsb3RzLmxlbmd0aCAhPT0gMyB8fCBzbG90cy5zb21lKHggPT4gIWlzSXRlbSh4KSkgfHwgbmV3IFNldChzbG90cykuc2l6ZSAhPT0gMykgewogICAgdGhyb3cgbmV3IFR5cGVFcnJvcignZXZhbHVhdGUgcmVxdWlyZXMgdGhyZWUgZGlmZmVyZW50IHBsYWNlZCBpdGVtcyBNL0MvQi9LJyk7CiAgfQogIHJldHVybiBbLi4uc2xvdHNdOwp9OwoKLyoqIEV2YWx1YXRlIGV4YWN0bHkgb25jZSBvbiB0aGUgc25hcHNob3Q7IG5vIHRpbWluZywgRE9NLCByZW5kZXJlciwgb3IgcmFuZG9tbmVzcy4gKi8KZXhwb3J0IGZ1bmN0aW9uIGV2YWx1YXRlKGlucHV0KSB7CiAgY29uc3Qgc2xvdHMgPSBzYWZlU2xvdHMoaW5wdXQpOwogIGNvbnN0IGhpZGRlbiA9IHNsb3RzWzFdID09PSAnQycgJiYgbmV3IFNldChbc2xvdHNbMF0sIHNsb3RzWzJdXSkuaGFzKCdNJykKICAgICYmIG5ldyBTZXQoW3Nsb3RzWzBdLCBzbG90c1syXV0pLmhhcygnQicpOwogIGNvbnN0IG1hdGNoZWRSdWxlSWRzID0gWwogICAgLi4uKGhpZGRlbiA/IFsnSCddIDogW10pLAogICAgLi4uKGFkamFjZW50KHNsb3RzLCAnTScsICdDJykgPyBbJ1IxJ10gOiBbXSksCiAgICAuLi4oYWRqYWNlbnQoc2xvdHMsICdDJywgJ0InKSA/IFsnUjInXSA6IFtdKSwKICAgIC4uLihhZGphY2VudChzbG90cywgJ0InLCAnSycpID8gWydSMyddIDogW10pLAogIF07CiAgY29uc3QgcmVhY3Rpb25JZCA9IG1hdGNoZWRSdWxlSWRzWzBdIHx8ICdSMCc7IC8vIEggPiBSMSA+IFIyID4gUjMgPiBSMAogIGNvbnN0IGNhdXNlU2xvdHMgPSByZWFjdGlvbklkID09PSAnSCcgPyBbMCwgMSwgMl0KICAgIDogcmVhY3Rpb25JZCA9PT0gJ1IxJyA/IHNvcnRlZFNsb3RzKHNsb3RzLCBbJ00nLCAnQyddKQogICAgOiByZWFjdGlvbklkID09PSAnUjInID8gc29ydGVkU2xvdHMoc2xvdHMsIFsnQycsICdCJ10pCiAgICA6IHJlYWN0aW9uSWQgPT09ICdSMycgPyBzb3J0ZWRTbG90cyhzbG90cywgWydCJywgJ0snXSkgOiBbXTsKICBjb25zdCBjbHVlSXRlbSA9IHsgSDogJ0MnLCBSMTogJ0MnLCBSMjogJ0InLCBSMzogJ0snIH1bcmVhY3Rpb25JZF07CiAgLy8gVGhpcyBhcnJheSBpcyBzYWZlIGZvciBQVUJMSUMgaGlnaGxpZ2h0aW5nLiBEbyBub3QgZXhwb3NlIGNhdXNlU2xvdHMgaW4gZ2FtZSBVSS4KICBjb25zdCB2aXNpYmxlQ2x1ZVNsb3RzID0gY2x1ZUl0ZW0gPyBbc2xvdHMuaW5kZXhPZihjbHVlSXRlbSldIDogW107CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoewogICAgcnVsZXNWZXJzaW9uOiBSVUxFU19WRVJTSU9OLAogICAgcmVhY3Rpb25JZCwKICAgIG1hdGNoZWRSdWxlSWRzOiBPYmplY3QuZnJlZXplKG1hdGNoZWRSdWxlSWRzKSwKICAgIGNhdXNlU2xvdHM6IE9iamVjdC5mcmVlemUoY2F1c2VTbG90cyksCiAgICB2aXNpYmxlQ2x1ZVNsb3RzOiBPYmplY3QuZnJlZXplKHZpc2libGVDbHVlU2xvdHMpLAogICAgZXZpZGVuY2VDdWVJZDogQ1VFU1tyZWFjdGlvbklkXSwKICAgIHJlc2lkdWFsQ2hhbmdlOiBSRVNJRFVBTFNbcmVhY3Rpb25JZF0sCiAgfSk7Cn0KCmNvbnN0IGNvcHlSZXN1bHQgPSByZXN1bHQgPT4gcmVzdWx0ID8gKHsKICAuLi5yZXN1bHQsCiAgbWF0Y2hlZFJ1bGVJZHM6IFsuLi5yZXN1bHQubWF0Y2hlZFJ1bGVJZHNdLAogIGNhdXNlU2xvdHM6IFsuLi5yZXN1bHQuY2F1c2VTbG90c10sCiAgdmlzaWJsZUNsdWVTbG90czogWy4uLnJlc3VsdC52aXNpYmxlQ2x1ZVNsb3RzXSwKfSkgOiBudWxsOwpjb25zdCBlZGl0aW5nID0gcGhhc2UgPT4gcGhhc2UgPT09ICdQTEFDRScgfHwgcGhhc2UgPT09ICdSRUFEWSc7CgpleHBvcnQgY2xhc3MgR2FtZSB7CiAgI3MgPSB7IHBoYXNlOiAnUExBQ0UnLCBzbG90czogW251bGwsIG51bGwsIG51bGxdLCBzZWxlY3RlZEl0ZW1JZDogbnVsbCwKICAgIHNsb3RTbmFwc2hvdDogbnVsbCwgcmVzdWx0OiBudWxsLCBiZWF0SW5kZXg6IC0xLCBydW5JZDogMCwgaGlzdG9yeTogW10sIGV2ZW50czogW10gfTsKICAjbGlzdGVuZXI7CiAgY29uc3RydWN0b3Iob25DaGFuZ2UgPSAoKSA9PiB7fSkgeyB0aGlzLiNsaXN0ZW5lciA9IG9uQ2hhbmdlOyB9CiAgZ2V0IHN0YXRlKCkgewogICAgY29uc3QgcyA9IHRoaXMuI3M7CiAgICByZXR1cm4gewogICAgICBwaGFzZTogcy5waGFzZSwgc2xvdHM6IFsuLi5zLnNsb3RzXSwgc2VsZWN0ZWRJdGVtSWQ6IHMuc2VsZWN0ZWRJdGVtSWQsCiAgICAgIHNsb3RTbmFwc2hvdDogcy5zbG90U25hcHNob3QgPyBbLi4ucy5zbG90U25hcHNob3RdIDogbnVsbCwKICAgICAgcmVzdWx0OiBjb3B5UmVzdWx0KHMucmVzdWx0KSwgYW5pbWF0aW9uU3RlcDogcy5iZWF0SW5kZXggPCAwID8gbnVsbCA6IEJFQVRTW3MuYmVhdEluZGV4XSwKICAgICAgcnVuSWQ6IHMucnVuSWQsIGhpc3Rvcnk6IHMuaGlzdG9yeS5tYXAoaCA9PiAoeyAuLi5oLCBzbG90czogWy4uLmguc2xvdHNdIH0pKSwKICAgICAgY2FuRWRpdDogZWRpdGluZyhzLnBoYXNlKSwgY2FuT3Blbjogcy5waGFzZSA9PT0gJ1JFQURZJywgY2FuU2tpcDogcy5waGFzZSA9PT0gJ1JFQUNUJywKICAgIH07CiAgfQogIGdldCBkZWJ1Z0V2ZW50cygpIHsgcmV0dXJuIHRoaXMuI3MuZXZlbnRzLm1hcChlID0+IHN0cnVjdHVyZWRDbG9uZShlKSk7IH0KICAjZW1pdCgpIHsgdGhpcy4jbGlzdGVuZXIodGhpcy5zdGF0ZSk7IH0KICAjbG9nKHR5cGUsIGRldGFpbHMgPSB7fSkgeyB0aGlzLiNzLmV2ZW50cy5wdXNoKHsgdHlwZSwgcnVuSWQ6IHRoaXMuI3MucnVuSWQsIC4uLmRldGFpbHMgfSk7IH0KICAjdXBkYXRlUGhhc2UoKSB7IHRoaXMuI3MucGhhc2UgPSB0aGlzLiNzLnNsb3RzLmV2ZXJ5KGlzSXRlbSkgPyAnUkVBRFknIDogJ1BMQUNFJzsgfQogIHNlbGVjdChpZCkgewogICAgaWYgKCFlZGl0aW5nKHRoaXMuI3MucGhhc2UpIHx8ICFpc0l0ZW0oaWQpKSByZXR1cm4gZmFsc2U7CiAgICB0aGlzLiNzLnNlbGVjdGVkSXRlbUlkID0gdGhpcy4jcy5zZWxlY3RlZEl0ZW1JZCA9PT0gaWQgPyBudWxsIDogaWQ7CiAgICB0aGlzLiNsb2coJ3NlbGVjdCcsIHsgaXRlbUlkOiB0aGlzLiNzLnNlbGVjdGVkSXRlbUlkIH0pOyB0aGlzLiNlbWl0KCk7IHJldHVybiB0cnVlOwogIH0KICBwbGFjZShpdGVtSWQsIGluZGV4LCB2aWEgPSAndGFwJykgewogICAgY29uc3QgcyA9IHRoaXMuI3M7CiAgICBpZiAoIWVkaXRpbmcocy5waGFzZSkgfHwgIWlzSXRlbShpdGVtSWQpIHx8ICFOdW1iZXIuaXNJbnRlZ2VyKGluZGV4KSB8fCBpbmRleCA8IDAgfHwgaW5kZXggPiAyKSByZXR1cm4gZmFsc2U7CiAgICBjb25zdCBiZWZvcmUgPSBbLi4ucy5zbG90c107CiAgICBjb25zdCBzb3VyY2UgPSBiZWZvcmUuaW5kZXhPZihpdGVtSWQpLCB0YXJnZXQgPSBiZWZvcmVbaW5kZXhdOwogICAgaWYgKHNvdXJjZSA9PT0gaW5kZXgpIHsgcy5zZWxlY3RlZEl0ZW1JZCA9IG51bGw7IHRoaXMuI2VtaXQoKTsgcmV0dXJuIHRydWU7IH0KICAgIC8vIFNoZWxmIGl0ZW0gb250byBhbm90aGVyIHNoZWxmIGl0ZW0gc3dhcHM7IHRyYXkgaXRlbSByZXBsYWNlcyBhbmQgZGlzcGxhY2VzIHRvIHRyYXkuCiAgICBpZiAoc291cmNlID49IDApIHMuc2xvdHNbc291cmNlXSA9IHRhcmdldCB8fCBudWxsOwogICAgcy5zbG90c1tpbmRleF0gPSBpdGVtSWQ7CiAgICBzLnNlbGVjdGVkSXRlbUlkID0gbnVsbDsKICAgIHRoaXMuI3VwZGF0ZVBoYXNlKCk7CiAgICB0aGlzLiNsb2coJ3BsYWNlJywgeyB2aWEsIGl0ZW1JZCwgaW5kZXgsIGFjdGlvbjogc291cmNlIDwgMCA/ICh0YXJnZXQgPyAncmVwbGFjZScgOiAnaW5zZXJ0JykgOiAodGFyZ2V0ID8gJ3N3YXAnIDogJ21vdmUnKSwgYmVmb3JlLCBhZnRlcjogWy4uLnMuc2xvdHNdIH0pOwogICAgdGhpcy4jZW1pdCgpOyByZXR1cm4gdHJ1ZTsKICB9CiAgcGxhY2VTZWxlY3RlZChpbmRleCkgeyByZXR1cm4gdGhpcy4jcy5zZWxlY3RlZEl0ZW1JZCA/IHRoaXMucGxhY2UodGhpcy4jcy5zZWxlY3RlZEl0ZW1JZCwgaW5kZXgsICd0YXAnKSA6IGZhbHNlOyB9CiAgb3BlbigpIHsKICAgIGNvbnN0IHMgPSB0aGlzLiNzOwogICAgaWYgKHMucGhhc2UgIT09ICdSRUFEWScpIHJldHVybiBmYWxzZTsKICAgIHMucnVuSWQrKzsKICAgIHMuc2xvdFNuYXBzaG90ID0gT2JqZWN0LmZyZWV6ZShbLi4ucy5zbG90c10pOwogICAgcy5yZXN1bHQgPSBldmFsdWF0ZShzLnNsb3RTbmFwc2hvdCk7CiAgICBzLnBoYXNlID0gJ1JFQUNUJzsgcy5iZWF0SW5kZXggPSAwOyBzLnNlbGVjdGVkSXRlbUlkID0gbnVsbDsKICAgIHRoaXMuI2xvZygnb3BlbicsIHsgc2xvdFNuYXBzaG90OiBbLi4ucy5zbG90U25hcHNob3RdLCBydWxlc1ZlcnNpb246IFJVTEVTX1ZFUlNJT04sCiAgICAgIG1hdGNoZWRSdWxlSWRzOiBbLi4ucy5yZXN1bHQubWF0Y2hlZFJ1bGVJZHNdLCBjaG9zZW5SdWxlSWQ6IHMucmVzdWx0LnJlYWN0aW9uSWQsCiAgICAgIHJlYWN0aW9uSWQ6IHMucmVzdWx0LnJlYWN0aW9uSWQsIGNhdXNlU2xvdHM6IFsuLi5zLnJlc3VsdC5jYXVzZVNsb3RzXSB9KTsKICAgIHRoaXMuI2VtaXQoKTsgcmV0dXJuIHRydWU7CiAgfQogIGFkdmFuY2UocnVuSWQgPSB0aGlzLiNzLnJ1bklkKSB7CiAgICBjb25zdCBzID0gdGhpcy4jczsKICAgIGlmIChzLnBoYXNlICE9PSAnUkVBQ1QnIHx8IHJ1bklkICE9PSBzLnJ1bklkKSByZXR1cm4gZmFsc2U7CiAgICBpZiAocy5iZWF0SW5kZXggPCBCRUFUUy5sZW5ndGggLSAxKSB7CiAgICAgIHMuYmVhdEluZGV4Kys7CiAgICAgIHRoaXMuI2xvZygnYmVhdCcsIHsgc3RlcDogQkVBVFNbcy5iZWF0SW5kZXhdIH0pOyB0aGlzLiNlbWl0KCk7CiAgICB9IGVsc2UgdGhpcy4jZmluaXNoKCdjb21wbGV0ZScpOwogICAgcmV0dXJuIHRydWU7CiAgfQogICNmaW5pc2godmlhKSB7CiAgICBjb25zdCBzID0gdGhpcy4jczsKICAgIGlmIChzLnBoYXNlICE9PSAnUkVBQ1QnKSByZXR1cm4gZmFsc2U7CiAgICBzLnBoYXNlID0gJ1JFU1VMVCc7IHMuYmVhdEluZGV4ID0gLTE7CiAgICBzLmhpc3RvcnkucHVzaCh7IHJ1bklkOiBzLnJ1bklkLCBzbG90czogWy4uLnMuc2xvdFNuYXBzaG90XSwgcmVhY3Rpb25JZDogcy5yZXN1bHQucmVhY3Rpb25JZCB9KTsKICAgIHRoaXMuI2xvZygncmVzdWx0JywgeyB2aWEsIHJlYWN0aW9uSWQ6IHMucmVzdWx0LnJlYWN0aW9uSWQsIHJlc2lkdWFsQ2hhbmdlOiBzLnJlc3VsdC5yZXNpZHVhbENoYW5nZSB9KTsKICAgIHRoaXMuI2VtaXQoKTsgcmV0dXJuIHRydWU7CiAgfQogIHNraXAoKSB7IHJldHVybiB0aGlzLiNmaW5pc2goJ3NraXAnKTsgfQogIHJlc3VtZUFmdGVyQmFja2dyb3VuZCgpIHsgcmV0dXJuIHRoaXMuI2ZpbmlzaCgnYmFja2dyb3VuZCcpOyB9CiAgcmVhcnJhbmdlKCkgewogICAgY29uc3QgcyA9IHRoaXMuI3M7CiAgICBpZiAocy5waGFzZSAhPT0gJ1JFU1VMVCcpIHJldHVybiBmYWxzZTsKICAgIHMucmVzdWx0ID0gbnVsbDsgcy5zbG90U25hcHNob3QgPSBudWxsOyBzLmJlYXRJbmRleCA9IC0xOwogICAgdGhpcy4jdXBkYXRlUGhhc2UoKTsgdGhpcy4jbG9nKCdyZWFycmFuZ2UnKTsgdGhpcy4jZW1pdCgpOyByZXR1cm4gdHJ1ZTsKICB9CiAgcmVzZXQoKSB7CiAgICBjb25zdCBzID0gdGhpcy4jczsKICAgIHMucnVuSWQrKzsgLy8gbGF0ZSBjYWxsYmFja3MgZnJvbSB0aGUgb2xkIHJ1biBiZWNvbWUgaW5lcnQKICAgIHMuc2xvdHMgPSBbbnVsbCwgbnVsbCwgbnVsbF07IHMuc2VsZWN0ZWRJdGVtSWQgPSBudWxsOyBzLnNsb3RTbmFwc2hvdCA9IG51bGw7CiAgICBzLnBoYXNlID0gJ1BMQUNFJzsgcy5yZXN1bHQgPSBudWxsOyBzLmJlYXRJbmRleCA9IC0xOyBzLmhpc3RvcnkgPSBbXTsKICAgIHMuZXZlbnRzID0gW107IHRoaXMuI2xvZygncmVzZXQnKTsgdGhpcy4jZW1pdCgpOyByZXR1cm4gdHJ1ZTsKICB9Cn0K';
@@ -102,6 +143,7 @@ function render(s) {
     button.classList.toggle('selected', editing && !!item && s.selectedItemId === item);
     button.classList.toggle('clue', clue?.includes(idx) ?? false);
     button.classList.toggle('secondary-cue', s.phase === 'REACT' && s.animationStep === 'GAZE' && s.result?.reactionId === 'R3' && item === 'B');
+    button.classList.toggle('mirror-glint', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R1' && item === 'M');
     content.replaceChildren(document.createTextNode(item ? `${SYMBOL[item]} ` : '＋'));
     if (item) { const name = document.createElement('span'); name.className = 'item-mini'; name.textContent = ITEMS[item]; content.append(name); }
     button.setAttribute('aria-label', `${['왼쪽', '가운데', '오른쪽'][idx]} 칸, ${item ? ITEMS[item] : '비어 있음'}${s.selectedItemId ? `, 선택 물건 ${ITEMS[s.selectedItemId]} 배치하기` : ''}`);
@@ -131,8 +173,22 @@ function render(s) {
     el.visitor.style.setProperty('--wipe-x', `${reachX}px`);
     el.visitor.style.setProperty('--wipe-y', `${reachY}px`);
   }
+  // The hand touches the ACTUAL mirror/bell item, independent of its slot index.
+  if (s.phase === 'REACT' && s.animationStep === 'ACTION' && ['R1','R2'].includes(s.result?.reactionId)) {
+    const targetItem = s.result.reactionId === 'R1' ? 'M' : 'B';
+    const targetSlot = s.slotSnapshot.indexOf(targetItem);
+    const icon = el.shelf.querySelector(`[data-slot="${targetSlot}"] .slot-content`).getBoundingClientRect();
+    const visitor = el.visitor.getBoundingClientRect();
+    const dx = (icon.left + icon.width / 2) - (visitor.right + 1);
+    const dy = (icon.top + icon.height / 2) - (visitor.top + 79);
+    el.visitor.style.setProperty('--target-dx', `${dx}px`);
+    el.visitor.style.setProperty('--target-dy', `${dy}px`);
+    el.visitor.style.setProperty('--reach-length', `${Math.hypot(dx,dy)}px`);
+    el.visitor.style.setProperty('--reach-angle', `${Math.atan2(-dy,-dx)*180/Math.PI}deg`);
+  }
   const residueShown = s.phase === 'RESULT' || (s.phase === 'REACT' && s.animationStep === 'RESIDUE');
   el.residue.classList.toggle('active', residueShown);
+  el.residue.classList.toggle('action-ripple', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R2');
   el.doorplate.classList.toggle('revealed', residueShown && s.result?.reactionId === 'R3');
   el.doorplate.classList.toggle('wiping', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R3');
   // The visible residue tracks the *actual* mirror/bell slot, not an assumed middle slot.
@@ -239,7 +295,7 @@ render(game.state);
 <body>
   <main class="game" aria-labelledby="title">
     <header class="header">
-      <div><span class="eyebrow">EXPERIMENT B · 0.1.1</span><h1 id="title">한밤의 진열장</h1></div>
+      <div><span class="eyebrow">EXPERIMENT B · 0.1.2</span><h1 id="title">한밤의 진열장</h1></div>
       <button id="reset" type="button" class="reset">처음부터</button>
     </header>
     <section class="scene" aria-label="손님과 선반을 관찰하는 무대">

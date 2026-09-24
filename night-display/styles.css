@@ -26,3 +26,44 @@
 /* A short sleeve-to-fingertip bridge makes the actual reach legible without a new sprite. */
 .visitor[data-reaction="R3"][data-beat="ACTION"] .visitor-arm::before{content:'';position:absolute;right:12px;top:3px;width:calc(var(--wipe-x,72px) + 8px);height:7px;border-radius:8px;background:linear-gradient(90deg,#777d8a 0%,#e8dab7 48%,#e8dab7 100%);transform-origin:right center;animation:arm-extend .38s ease-in-out forwards}
 @keyframes arm-extend{from{width:6px}to{width:calc(var(--wipe-x,72px) + 8px)}}
+
+/* v0.1.2: distinguish looking at the back wall from looking at the center object. */
+.scene[data-reaction="H"][data-phase="REACT"] .visitor[data-beat="GAZE"] .visitor-head{
+  transform:translateY(-8px) scale(.93);background:#d0c3a5;box-shadow:inset 5px -7px #b9a987;
+  transition:transform .18s ease-out,background .18s ease-out;
+}
+.scene[data-reaction="H"][data-phase="REACT"] .visitor[data-beat="GAZE"] .eye{opacity:0}
+/* R0: every shelf position gets equal, brief attention; no highlighted slot. */
+.scene[data-reaction="R0"][data-phase="REACT"] .visitor[data-beat="GAZE"] .visitor-head{
+  animation:neutral-three-slot-scan .54s linear both;
+}
+@keyframes neutral-three-slot-scan{
+  0%{transform:translateX(-13px) rotate(-5deg)}
+  50%{transform:translateX(0) rotate(0)}
+  100%{transform:translateX(13px) rotate(5deg)}
+}
+/* Move the existing single hand and short arm bridge to the actually occupied M/B slot. */
+.scene[data-phase="REACT"] .visitor[data-reaction="R1"][data-beat="ACTION"],
+.scene[data-phase="REACT"] .visitor[data-reaction="R2"][data-beat="ACTION"]{z-index:5}
+.visitor[data-reaction="R1"][data-beat="ACTION"] .visitor-arm,
+.visitor[data-reaction="R2"][data-beat="ACTION"] .visitor-arm{
+  opacity:1;transform:translate(var(--target-dx,0px),var(--target-dy,0px));transition:transform .33s ease-out;
+}
+.visitor[data-reaction="R1"][data-beat="ACTION"] .visitor-arm::before,
+.visitor[data-reaction="R2"][data-beat="ACTION"] .visitor-arm::before{
+  content:'';position:absolute;left:11px;top:6px;
+  width:var(--reach-length,6px);height:7px;border-radius:7px;
+  transform-origin:left center;transform:rotate(var(--reach-angle,0deg));
+  background:linear-gradient(90deg,#e8dab7 0%,#777d8a 100%);z-index:-1;
+}
+/* Reflection is an action beat near the mirror, not a second CUE highlight. */
+.slot.mirror-glint[data-item="M"] .slot-content::after{
+  content:'✦';position:absolute;top:30px;right:19px;color:#faedb8;font-size:17px;
+  text-shadow:0 0 6px #fff1ad;pointer-events:none;
+}
+/* R2 ripple begins late in ACTION under the already present bell and persists as RESIDUE. */
+.scene[data-reaction="R2"] .residue.action-ripple{
+  background:repeating-radial-gradient(ellipse,#e6d6a7 0 2px,transparent 3px 8px);
+  height:10px;animation:bell-action-ripple .54s linear both;
+}
+@keyframes bell-action-ripple{0%,60%{opacity:0}85%,100%{opacity:1}}

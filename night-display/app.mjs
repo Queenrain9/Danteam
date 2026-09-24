@@ -62,6 +62,7 @@ function render(s) {
     button.classList.toggle('selected', editing && !!item && s.selectedItemId === item);
     button.classList.toggle('clue', clue?.includes(idx) ?? false);
     button.classList.toggle('secondary-cue', s.phase === 'REACT' && s.animationStep === 'GAZE' && s.result?.reactionId === 'R3' && item === 'B');
+    button.classList.toggle('mirror-glint', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R1' && item === 'M');
     content.replaceChildren(document.createTextNode(item ? `${SYMBOL[item]} ` : '＋'));
     if (item) { const name = document.createElement('span'); name.className = 'item-mini'; name.textContent = ITEMS[item]; content.append(name); }
     button.setAttribute('aria-label', `${['왼쪽', '가운데', '오른쪽'][idx]} 칸, ${item ? ITEMS[item] : '비어 있음'}${s.selectedItemId ? `, 선택 물건 ${ITEMS[s.selectedItemId]} 배치하기` : ''}`);
@@ -91,8 +92,22 @@ function render(s) {
     el.visitor.style.setProperty('--wipe-x', `${reachX}px`);
     el.visitor.style.setProperty('--wipe-y', `${reachY}px`);
   }
+  // The hand touches the ACTUAL mirror/bell item, independent of its slot index.
+  if (s.phase === 'REACT' && s.animationStep === 'ACTION' && ['R1','R2'].includes(s.result?.reactionId)) {
+    const targetItem = s.result.reactionId === 'R1' ? 'M' : 'B';
+    const targetSlot = s.slotSnapshot.indexOf(targetItem);
+    const icon = el.shelf.querySelector(`[data-slot="${targetSlot}"] .slot-content`).getBoundingClientRect();
+    const visitor = el.visitor.getBoundingClientRect();
+    const dx = (icon.left + icon.width / 2) - (visitor.right + 1);
+    const dy = (icon.top + icon.height / 2) - (visitor.top + 79);
+    el.visitor.style.setProperty('--target-dx', `${dx}px`);
+    el.visitor.style.setProperty('--target-dy', `${dy}px`);
+    el.visitor.style.setProperty('--reach-length', `${Math.hypot(dx,dy)}px`);
+    el.visitor.style.setProperty('--reach-angle', `${Math.atan2(-dy,-dx)*180/Math.PI}deg`);
+  }
   const residueShown = s.phase === 'RESULT' || (s.phase === 'REACT' && s.animationStep === 'RESIDUE');
   el.residue.classList.toggle('active', residueShown);
+  el.residue.classList.toggle('action-ripple', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R2');
   el.doorplate.classList.toggle('revealed', residueShown && s.result?.reactionId === 'R3');
   el.doorplate.classList.toggle('wiping', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R3');
   // The visible residue tracks the *actual* mirror/bell slot, not an assumed middle slot.
