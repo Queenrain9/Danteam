@@ -15,10 +15,10 @@ const PRESENTATION = {
   },
   R2: {
     CUE: '종의 테두리가 살짝 떨립니다.', GAZE: '손님이 촛불을 바라봅니다.',
-    ACTION: '손님이 촛불을 향해 숨을 내쉽니다.', RESIDUE: '종 아래에 가느다란 파문이 남았습니다.',
+    ACTION: '손님이 종 근처로 손을 내밀자 파문이 번집니다.', RESIDUE: '종 아래에 가느다란 파문이 남았습니다.',
   },
   R3: {
-    CUE: '열쇠가 아주 짧게 떨립니다.', GAZE: '인접한 종이 흔들리고 손님의 시선이 옮겨갑니다.',
+    CUE: '열쇠가 아주 짧게 떨립니다.', GAZE: '종이 짧게 흔들리고 손님의 시선이 옮겨갑니다.',
     ACTION: '손님이 기존 문에 달린 먼지 낀 잠금판을 한 번 닦습니다.',
     RESIDUE: '먼지 아래 있던 열쇠구멍 윤곽이 드러났습니다.',
   },
@@ -53,6 +53,7 @@ function render(s) {
   const editing = s.canEdit;
   const clue = s.phase === 'REACT' && s.animationStep === 'CUE' ? s.result?.visibleClueSlots : [];
   el.scene.dataset.reaction = s.result?.reactionId ?? '';
+  el.scene.dataset.phase = s.phase;
   el.count.textContent = `${s.slots.filter(Boolean).length} / 3`;
   el.shelf.querySelectorAll('[data-slot]').forEach(button => {
     const idx = Number(button.dataset.slot), item = s.slots[idx], content = button.querySelector('.slot-content');
@@ -60,6 +61,7 @@ function render(s) {
     button.classList.toggle('filled', !!item);
     button.classList.toggle('selected', editing && !!item && s.selectedItemId === item);
     button.classList.toggle('clue', clue?.includes(idx) ?? false);
+    button.classList.toggle('secondary-cue', s.phase === 'REACT' && s.animationStep === 'GAZE' && s.result?.reactionId === 'R3' && item === 'B');
     content.replaceChildren(document.createTextNode(item ? `${SYMBOL[item]} ` : '＋'));
     if (item) { const name = document.createElement('span'); name.className = 'item-mini'; name.textContent = ITEMS[item]; content.append(name); }
     button.setAttribute('aria-label', `${['왼쪽', '가운데', '오른쪽'][idx]} 칸, ${item ? ITEMS[item] : '비어 있음'}${s.selectedItemId ? `, 선택 물건 ${ITEMS[s.selectedItemId]} 배치하기` : ''}`);
@@ -80,14 +82,28 @@ function render(s) {
     : s.result?.reactionId === 'R2' ? s.slotSnapshot.indexOf('C')
     : s.result?.reactionId === 'R3' ? s.slotSnapshot.indexOf('B') : 1;
   el.visitor.style.setProperty('--gaze-shift', `${(gazeTarget - 1) * 18}px`);
+  // The hand moves from the visitor to the fixed doorplate, scaled to the actual scene width.
+  // This visual-only measure does not affect placement, evaluation, or the immutable slot snapshot.
+  if (s.result?.reactionId === 'R3' && s.phase === 'REACT' && s.animationStep === 'ACTION') {
+    const plate = el.doorplate.getBoundingClientRect(), person = el.visitor.getBoundingClientRect();
+    const reachX = plate.left + plate.width / 2 - (person.left + person.width + 1);
+    const reachY = plate.top + plate.height / 2 - (person.top + 79);
+    el.visitor.style.setProperty('--wipe-x', `${reachX}px`);
+    el.visitor.style.setProperty('--wipe-y', `${reachY}px`);
+  }
   const residueShown = s.phase === 'RESULT' || (s.phase === 'REACT' && s.animationStep === 'RESIDUE');
   el.residue.classList.toggle('active', residueShown);
   el.doorplate.classList.toggle('revealed', residueShown && s.result?.reactionId === 'R3');
+  el.doorplate.classList.toggle('wiping', s.phase === 'REACT' && s.animationStep === 'ACTION' && s.result?.reactionId === 'R3');
+  // The visible residue tracks the *actual* mirror/bell slot, not an assumed middle slot.
+  const markItem = s.result?.reactionId === 'R1' ? 'M' : s.result?.reactionId === 'R2' ? 'B' : null;
+  const markSlot = markItem ? s.slotSnapshot.indexOf(markItem) : -1;
+  el.residue.style.setProperty('--residue-left', `${markSlot < 0 ? 50 : (markSlot + .5) / 3 * 100}%`);
   el.guest.classList.toggle('active', (s.phase === 'REACT' && ['ACTION', 'RESIDUE'].includes(s.animationStep) || residueShown) && s.result?.reactionId === 'H');
   el.primary.hidden = s.phase === 'REACT';
   el.skip.hidden = s.phase !== 'REACT';
   el.note.textContent = editing && s.selectedItemId ? `선택: ${ITEMS[s.selectedItemId]} → 칸 누르기` : '물건 선택 → 선반 칸 선택';
-  el.counter.textContent = `방문 기록 ${s.history.length}회 · 결과를 보고 직접 다시 배치해 보세요.`;
+  el.counter.textContent = `방문 기록 ${s.history.length}회`;
   if (s.phase === 'PLACE') {
     el.primary.disabled = true;
     el.primary.textContent = `문 열기 · 물건 ${3 - s.slots.filter(Boolean).length}개 더 필요`;
@@ -99,7 +115,7 @@ function render(s) {
     setMessage('손님이 들어왔습니다', PRESENTATION[s.result.reactionId][s.animationStep], '◌');
   } else if (s.phase === 'RESULT') {
     el.primary.disabled = false; el.primary.textContent = '다시 배치';
-    setMessage(LABEL[s.result.reactionId], PRESENTATION[s.result.reactionId].RESIDUE + ' 배치를 바꾸면 다른 반응이 있을까요?', '✧');
+    setMessage(LABEL[s.result.reactionId], PRESENTATION[s.result.reactionId].RESIDUE, '✧');
   }
 }
 
