@@ -1,9 +1,11 @@
 # P1 build manifest · 2026-09-25
 
-Title: STARPATH POST · 별길 우체국 / 星みち郵便局.
+STARPATH POST · 별길 우체국 / 星みち郵便局, Korean/Japanese mobile first playable vertical slice.
 
-Standalone HTML: `별길_우체국_개발빌드.html`, 58,321 bytes, SHA256 `ca50fd089c5514459ba0fc72dced8ce499967a7571677c5135d0f5eda5dad603`. Full editable source ZIP: `별길_우체국_P1_소스.zip`, 55,748 bytes, SHA256 `dc6635d9bb08aca07bf817e44926ddb39c49ebad9390db3a377fb88eaa81ba22`. These exact artifacts are downloadable in the originating ChatGPT conversation; the sandbox paths are NOT persistent public web URLs.
+**Newest** standalone HTML: 별길_우체국_개발빌드.html, 58,310 bytes; SHA256 c9b1ce1d33e1aff12434d253900295e6cf8604bae0f529730d799282cb9f1622.
 
-The GitHub branch stores the market/concept rationale, original 12-level data, executable domain solvability verification, QA evidence, and build manifest. **Do not claim the 58 KB compiled HTML or 55 KB ZIP have been uploaded to GitHub unless those files are actually written there.** The user can continue with the ZIP through the conversation download.
+**Newest** editable project ZIP: 별길_우체국_P1_소스.zip, 57,365 bytes; SHA256 44cd38724dd3f61b305534d2e62ac59ad1d93f581a0159e87d9f853ba363e8ce. Both are downloadable in the originating conversation and are not automatically accessible via permanent public URLs.
 
-Product quality status: P0 research + P1 first executable slice. NOT human-validated enjoyment, NOT native app, NOT a launch-ready product. P2: consent-based KR/JP player studies and concept contrast. P3: complete production content, richer expressive system, original finalized art/audio, native localization/device/accessibility review, legal/store compliance, owner-authorized release. Do not fabricate these passes.
+The GitHub branch includes research and scope gates, deterministic level source, executable solver-verification harness and QA evidence. The compiled HTML and editable ZIP were created in the ChatGPT container, NOT yet copied into GitHub. Do not mislabel these documents as game source-code uploads.
+
+Automated Chromium QA now includes real touch event simulation and mid-route save/reload/undo. A critical lost-progress bug in restore() was found through this additional test, fixed, and all twelve stages regressed successfully. **Still open:** real iOS/Android hardware QA, authentic independent KR/JP enjoyment / attachment research, native-language review, accessibility, licensing/store/privacy review and final commercial launch authorization. P1 is NOT a production release.
